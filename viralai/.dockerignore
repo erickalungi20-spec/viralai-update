@@ -1,0 +1,13 @@
+.git
+.github
+.venv
+.pytest_cache
+.viralai_cache
+.viralai_api_data
+__pycache__
+*.py[cod]
+*.egg-info
+tests
+pytest_full.log
+.env
+

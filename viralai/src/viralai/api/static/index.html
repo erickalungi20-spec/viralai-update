@@ -1,0 +1,1509 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>ViralAI Research Studio</title>
+    <style>
+      :root {
+        color-scheme: dark;
+        --bg: #041024;
+        --surface: rgba(7, 17, 36, 0.95);
+        --surface-strong: #0f203d;
+        --text: #eef4ff;
+        --muted: #9ab3d6;
+        --accent: #5ce2ff;
+        --accent-strong: #b185ff;
+        --border: rgba(255, 255, 255, 0.12);
+        --success: #66d184;
+        --warning: #ffc76b;
+        --danger: #ff6f6f;
+      }
+
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        min-height: 100vh;
+        font-family: Inter, 'Segoe UI', Arial, sans-serif;
+        background: radial-gradient(circle at top left, rgba(12, 42, 105, 0.9), transparent 35%),
+                    radial-gradient(circle at bottom right, rgba(57, 15, 79, 0.9), transparent 40%),
+                    linear-gradient(180deg, #07131f 0%, #02060f 100%);
+        color: var(--text);
+      }
+
+      .shell {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 28px 24px 48px;
+      }
+
+      .topbar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 18px;
+        margin-bottom: 24px;
+        flex-wrap: wrap;
+      }
+
+      .brand {
+        display: grid;
+        gap: 8px;
+      }
+
+      .brand h1 {
+        margin: 0;
+        font-size: clamp(2rem, 3vw, 2.8rem);
+        letter-spacing: -0.04em;
+      }
+
+      .brand p {
+        margin: 0;
+        color: var(--muted);
+        max-width: 640px;
+      }
+
+      .top-actions {
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+      }
+
+      .btn {
+        border: none;
+        border-radius: 999px;
+        padding: 12px 22px;
+        cursor: pointer;
+        text-decoration: none;
+        font-weight: 700;
+        transition: transform 0.16s ease, box-shadow 0.16s ease;
+      }
+
+      .btn:hover { transform: translateY(-1px); }
+      .btn-primary { background: linear-gradient(135deg, var(--accent), var(--accent-strong)); color: #04111f; }
+      .btn-secondary { background: rgba(255,255,255,0.06); color: var(--text); }
+      .btn-secondary:hover { box-shadow: 0 0 0 1px rgba(255,255,255,0.08); }
+
+      .grid-2 {
+        display: grid;
+        grid-template-columns: 1.3fr 0.9fr;
+        gap: 24px;
+      }
+
+      .panel {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 24px;
+        padding: 24px;
+        box-shadow: 0 24px 80px rgba(0,0,0,0.18);
+      }
+
+      .panel h2 {
+        margin: 0 0 10px;
+        font-size: 1.45rem;
+      }
+
+      .panel p {
+        margin: 0;
+        color: var(--muted);
+        line-height: 1.7;
+      }
+
+      .panel-row {
+        display: grid;
+        gap: 16px;
+        margin-top: 20px;
+      }
+
+      .metric-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 16px;
+      }
+
+      .metric {
+        background: rgba(255,255,255,0.04);
+        border: 1px solid rgba(255,255,255,0.08);
+        border-radius: 18px;
+        padding: 18px;
+      }
+
+      .metric strong {
+        display: block;
+        margin-bottom: 8px;
+        font-size: 1rem;
+      }
+
+      .metric span { color: var(--muted); }
+
+      .toolbar {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        align-items: center;
+        margin-bottom: 18px;
+      }
+
+      .toolbar label {
+        display: grid;
+        gap: 6px;
+        font-size: 0.95rem;
+        color: var(--muted);
+      }
+
+      select, input, textarea {
+        width: 100%;
+        font: inherit;
+        color: var(--text);
+        background: rgba(255,255,255,0.05);
+        border: 1px solid var(--border);
+        border-radius: 14px;
+        padding: 12px 14px;
+      }
+
+      textarea { min-height: 110px; resize: vertical; }
+      .field-grid { display: grid; gap: 16px; }
+      .field { display: grid; gap: 8px; }
+
+      .field small { color: var(--muted); }
+      .field-error { color: var(--danger); font-size: 0.95rem; margin-top: 4px; }
+      .status-card {
+        margin-top: 16px;
+        background: rgba(92, 226, 255, 0.08);
+        border: 1px solid rgba(92, 226, 255, 0.18);
+        border-radius: 18px;
+        padding: 18px;
+      }
+
+      .status-card pre {
+        margin: 0;
+        white-space: pre-wrap;
+        word-break: break-word;
+        color: var(--text);
+      }
+
+      .chips {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-top: 20px;
+      }
+
+      .chip {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        border-radius: 999px;
+        padding: 10px 14px;
+        background: rgba(255,255,255,0.06);
+        border: 1px solid rgba(255,255,255,0.08);
+      }
+
+      .chip strong {
+        color: var(--accent);
+      }
+
+      .panel-footer {
+        margin-top: 24px;
+        display: grid;
+        gap: 10px;
+      }
+
+      .plugin-list { display: grid; gap: 12px; margin-top: 16px; }
+      .plugin-item {
+        border-radius: 18px;
+        padding: 16px;
+        background: rgba(255,255,255,0.04);
+        border: 1px solid rgba(255,255,255,0.08);
+      }
+
+      .plugin-item strong {
+        display: block;
+        margin-bottom: 8px;
+      }
+
+      .alert {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        border-radius: 16px;
+        padding: 14px 18px;
+        background: rgba(92,226,255,0.1);
+        border: 1px solid rgba(92,226,255,0.18);
+        color: var(--text);
+      }
+
+      .spinner {
+        width: 16px;
+        height: 16px;
+        border-radius: 50%;
+        border: 2px solid rgba(255,255,255,0.22);
+        border-top-color: var(--accent);
+        animation: spin 0.85s linear infinite;
+      }
+
+      @keyframes spin { to { transform: rotate(360deg); } }
+
+      @media (max-width: 1080px) { .grid-2 { grid-template-columns: 1fr; } }
+      @media (max-width: 720px) {
+        .shell { padding: 20px 16px 34px; }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="shell">
+      <div class="topbar">
+        <div class="brand">
+          <div class="tag">ViralAI Research Studio</div>
+          <h1>Interactive workflow orchestration for genomics research.</h1>
+          <p>Explore template-driven analyses, submit jobs, and monitor progress in one responsive dashboard.</p>
+        </div>
+        <div class="top-actions">
+          <a class="btn btn-secondary" href="/health">Health</a>
+          <a class="btn btn-secondary" href="/docs">API Docs</a>
+          <a class="btn btn-primary" href="#run-workflow">Launch workflow</a>
+          <button id="admin-toggle" class="btn btn-secondary">Admin Tools</button>
+        </div>
+      </div>
+
+      <div class="grid-2">
+        <section class="panel">
+          <div class="panel-row">
+            <div>
+              <h2>Workflow templates</h2>
+              <p>Pick a research workflow, fill the inputs, and run it immediately. The system validates your request before it is submitted.</p>
+            </div>
+            <div class="chips">
+              <span class="chip"><strong>Auto-fill</strong> quick scenarios</span>
+              <span class="chip"><strong>Live state</strong> updates</span>
+              <span class="chip"><strong>Persistent</strong> run history</span>
+            </div>
+          </div>
+
+          <div class="toolbar">
+            <label>
+              Select template
+              <select id="template-select"></select>
+            </label>
+            <button id="reload-templates" class="btn btn-secondary">Reload templates</button>
+          </div>
+
+          <div id="workflow-description" style="color: var(--muted); margin-bottom: 16px;"></div>
+          <form id="workflow-form" class="field-grid"></form>
+          <div style="display:flex; gap:12px; flex-wrap:wrap; margin-top:18px;">
+            <button id="run-template" class="btn btn-primary">Run workflow</button>
+            <button id="fill-sample" type="button" class="btn btn-secondary">Use sample values</button>
+          </div>
+          <div id="form-error" class="field-error"></div>
+          <div id="workflow-status" class="status-card" style="display:none;"></div>
+        </section>
+
+        <section class="panel" id="run-workflow">
+          <div class="panel-row">
+            <div>
+              <h2>Run history</h2>
+              <p>See your queued and completed workflow runs immediately after submission.</p>
+            </div>
+            <div>
+              <button id="refresh-runs" class="btn btn-secondary">Refresh history</button>
+            </div>
+          </div>
+
+          <div id="run-history"></div>
+        </section>
+      </div>
+
+      <section class="panel" style="margin-top:24px;">
+        <div class="panel-row">
+          <div>
+            <h2>Platform overview</h2>
+            <p>Drive research workflows, inspect plugins, and analyze models from a single UI.</p>
+          </div>
+          <div class="metric-grid">
+            <div class="metric"><strong>Templates</strong><span>Dynamic workflow forms</span></div>
+            <div class="metric"><strong>Jobs</strong><span>Queued, running and completed</span></div>
+            <div class="metric"><strong>Plugins</strong><span>Discoverable extensions</span></div>
+          </div>
+          <div id="plugin-list" style="margin-top:18px;"></div>
+        </div>
+
+        <div class="grid-2" style="margin-top:20px;">
+          <article id="ai-dataset-panel" class="panel" style="background: rgba(255,255,255,0.04); display:none;">
+            <h2>AI dataset & training</h2>
+            <p>Register training datasets, train models, and inspect available records live.</p>
+            <div class="field-grid">
+              <label class="field">
+                <span>Researcher API key</span>
+                <input id="api-key" type="password" placeholder="X-API-Key for protected operations" />
+              </label>
+            </div>
+            <div class="toolbar">
+              <button id="refresh-datasets" class="btn btn-secondary">Refresh datasets</button>
+              <button id="fill-dataset-sample" class="btn btn-secondary">Use sample dataset</button>
+            </div>
+            <div class="field-grid">
+              <label class="field">
+                <span>Dataset name</span>
+                <input id="dataset-name" placeholder="viral-dataset" />
+              </label>
+              <label class="field">
+                <span>Dataset version</span>
+                <input id="dataset-version" placeholder="1.0.0" />
+              </label>
+              <label class="field">
+                <span>Description</span>
+                <input id="dataset-description" placeholder="Dataset description" />
+              </label>
+              <label class="field">
+                <span>Validation split</span>
+                <input id="dataset-validation-split" placeholder="0.0" />
+              </label>
+              <label class="field">
+                <span>Training examples</span>
+                <textarea id="dataset-training-examples" rows="4" placeholder='[{"mutation":{"position":10,"reference_base":"A","observed_base":"T","mutation_type":"substitution","confidence_score":0.9},"context":{"genome_length":100,"entropy_at_position":0.2,"population_frequency":0.1},"label":1}]'></textarea>
+              </label>
+              <label class="field">
+                <span>Validation examples</span>
+                <textarea id="dataset-validation-examples" rows="4" placeholder="[]"></textarea>
+              </label>
+              <label class="field">
+                <span>Train model name</span>
+                <input id="train-model-name" placeholder="dataset-trained-model" />
+              </label>
+              <label class="field">
+                <span>Train model version</span>
+                <input id="train-model-version" placeholder="0.1.0" />
+              </label>
+              <label class="field">
+                <span>Training notes</span>
+                <input id="train-model-notes" placeholder="Trained from dataset" />
+              </label>
+              <label class="field">
+                <span>Workspace project ID</span>
+                <input id="comparison-workspace-id" placeholder="project-123" />
+              </label>
+              <label class="field">
+                <span>Reference genome</span>
+                <input id="comparison-reference-genome" placeholder="ACGTACGTACGT" />
+              </label>
+              <label class="field">
+                <span>Genomic search</span>
+                <input id="ncbi-search-term" placeholder="Enter organism or accession" />
+              </label>
+              <label class="field">
+                <span>Search engine</span>
+                <select id="genomic-source-select">
+                  <option value="ncbi" selected>NCBI</option>
+                  <option value="ena">ENA</option>
+                  <option value="ddbj">DDBJ</option>
+                  <option value="ebisearch">EBI Search</option>
+                </select>
+                <small>Choose the engine to search and open records from.</small>
+              </label>
+              <label class="field">
+                <span>Upload FASTA file</span>
+                <input id="ncbi-file-upload" type="file" accept=".fasta,.fa,.txt" />
+              </label>
+            </div>
+            <div style="display:flex; gap:12px; flex-wrap:wrap; margin-top:18px;">
+              <button id="register-dataset" class="btn btn-primary">Register dataset</button>
+              <button id="train-from-dataset" class="btn btn-secondary">Train model from dataset</button>
+              <button id="search-ncbi" class="btn btn-secondary">Search genomic sources</button>
+              <button id="download-ncbi" class="btn btn-secondary">Download selected accession</button>
+              <button id="import-ncbi" class="btn btn-secondary">Import NCBI accession</button>
+              <button id="refresh-library" class="btn btn-secondary">Refresh library</button>
+              <button id="upload-genome" class="btn btn-secondary">Upload FASTA</button>
+              <button id="queue-comparison" class="btn btn-primary">Queue comparison</button>
+            </div>
+            <div id="ncbi-status" class="status-card" style="display:none;"></div>
+            <div id="comparison-status" class="status-card" style="display:none;"></div>
+            <div id="comparison-summary" style="margin-top:16px;"></div>
+            <div style="margin-top:18px; border-top:1px solid rgba(255,255,255,0.08); padding-top:16px;">
+              <h3 style="margin:0 0 12px 0; font-size:1rem; letter-spacing:0.02em;">NCBI search results</h3>
+              <div id="ncbi-search-results"></div>
+            </div>
+            <div style="margin-top:24px; border-top:1px solid rgba(255,255,255,0.08); padding-top:16px;">
+              <h3 style="margin:0 0 12px 0; font-size:1rem; letter-spacing:0.02em;">Imported genomic library</h3>
+              <div id="ncbi-library-list"></div>
+            </div>
+            <div style="margin-top:24px; border-top:1px solid rgba(255,255,255,0.08); padding-top:16px;">
+              <h3 style="margin:0 0 12px 0; font-size:1rem; letter-spacing:0.02em;">Uploaded FASTA files</h3>
+              <div id="ncbi-uploaded-list"></div>
+            </div>
+            <div id="dataset-status" class="status-card" style="display:none;"></div>
+            <div id="dataset-list" style="margin-top:18px;"></div>
+          </article>
+          <article class="panel" style="background: rgba(255,255,255,0.04);">
+            <h2>Viral data & validation</h2>
+            <p>Browse available viral plugin metadata and validate the engine against benchmark datasets.</p>
+            <div class="toolbar">
+              <button id="refresh-plugin-data" class="btn btn-secondary">Refresh viral data</button>
+              <button id="run-validation" class="btn btn-primary">Run validation benchmarks</button>
+            </div>
+            <div id="benchmark-status" class="status-card" style="display:none;"></div>
+            <div id="plugin-data-list" style="margin-top:18px;"></div>
+            <div id="benchmark-list" style="margin-top:18px;"></div>
+            <div id="benchmark-results" style="margin-top:18px;"></div>
+          </article>
+          <article class="panel" style="background: rgba(255,255,255,0.04);">
+            <h2>Quick AI explainability</h2>
+            <p>Run explainability without signing in. This helps you understand model feature signals for hotspot predictions.</p>
+            <div class="field-grid">
+              <label class="field">
+                <span>Explain model name</span>
+                <input id="explain-model-name" value="demo" />
+              </label>
+              <label class="field">
+                <span>Explain model version</span>
+                <input id="explain-model-version" value="0.0.1" />
+              </label>
+              <label class="field">
+                <span>Feature vector</span>
+                <input id="feature-vector" value="0.2,1,0,0,0.9,0.1,0.0,1,0,1,0,0" />
+              </label>
+              <div style="display:flex; gap:12px; flex-wrap:wrap;">
+                <button id="explain-button" class="btn btn-secondary">Explain prediction</button>
+                <button id="suggest-button" type="button" class="btn btn-secondary">Load example</button>
+                <button id="register-demo-model" type="button" class="btn btn-primary">Register demo model</button>
+              </div>
+            </div>
+            <div id="explainability" class="status-card" style="margin-top:16px; display:none;"></div>
+            <div class="status-card" style="margin-top:18px; padding: 16px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08);">
+              <h3>Mutation reasoning assistant</h3>
+              <p>Use the trained model plus gene annotations to get a research-use explanation linking hotspots, proteins, and literature context.</p>
+              <div class="field-grid">
+                <label class="field">
+                  <span>Virus</span>
+                  <input id="reason-virus" value="HPV16" />
+                </label>
+                <label class="field">
+                  <span>Reason model name</span>
+                  <input id="reason-model-name" value="demo" />
+                </label>
+                <label class="field">
+                  <span>Reason model version</span>
+                  <input id="reason-model-version" value="0.0.1" />
+                </label>
+                <label class="field" style="grid-column: span 2;">
+                  <span>Mutation JSON</span>
+                  <textarea id="reason-mutation" rows="3">{"position": 3, "reference_base": "G", "observed_base": "A", "mutation_type": "substitution", "confidence_score": 0.9}</textarea>
+                </label>
+                <label class="field" style="grid-column: span 2;">
+                  <span>Reference genome</span>
+                  <textarea id="reason-reference-genome" rows="3">ACGTACGTACGT</textarea>
+                </label>
+                <label class="field" style="grid-column: span 2;">
+                  <span>Gene annotations</span>
+                  <textarea id="reason-gene-annotations" rows="3">[{"gene": "E6", "start": 1, "end": 12}]</textarea>
+                </label>
+                <label class="field">
+                  <span>Entropy at position</span>
+                  <input id="reason-entropy" type="number" step="0.01" value="0.2" />
+                </label>
+                <label class="field">
+                  <span>Population frequency</span>
+                  <input id="reason-population-frequency" type="number" step="0.01" value="0.05" />
+                </label>
+              </div>
+              <div style="display:flex; gap:12px; flex-wrap:wrap; margin-top:12px;">
+                <button id="reason-button" class="btn btn-secondary">Reason about mutation</button>
+                <button id="reason-sample-button" class="btn btn-secondary">Load sample</button>
+              </div>
+              <div id="reasoning" class="status-card" style="margin-top:16px; display:none;"></div>
+            </div>
+          </article>
+        </div>
+      </section>
+    </div>
+
+    <script>
+      const state = {
+        templates: [],
+        currentTemplate: null,
+        currentFields: [],
+        runId: null,
+        jobId: null,
+        history: [],
+      };
+
+      const genomicStorageKeys = {
+        term: 'viralai.genomic.search.term',
+        source: 'viralai.genomic.search.source',
+        results: 'viralai.genomic.search.results',
+      };
+
+      const templateSelect = document.getElementById('template-select');
+      const workflowForm = document.getElementById('workflow-form');
+      const workflowDescription = document.getElementById('workflow-description');
+      const workflowStatus = document.getElementById('workflow-status');
+      const formError = document.getElementById('form-error');
+      const runHistory = document.getElementById('run-history');
+      const pluginList = document.getElementById('plugin-list') || document.getElementById('plugin-data-list');
+      const explainabilityBox = document.getElementById('explainability');
+      const reasoningBox = document.getElementById('reasoning');
+      const featureVectorInput = document.getElementById('feature-vector');
+      const apiKeyInput = document.getElementById('api-key');
+      const adminToggle = document.getElementById('admin-toggle');
+      const aiDatasetPanel = document.getElementById('ai-dataset-panel');
+      const datasetStatus = document.getElementById('dataset-status');
+      const datasetList = document.getElementById('dataset-list');
+      const datasetNameInput = document.getElementById('dataset-name');
+      const datasetVersionInput = document.getElementById('dataset-version');
+      const datasetDescriptionInput = document.getElementById('dataset-description');
+      const datasetValidationSplitInput = document.getElementById('dataset-validation-split');
+      const datasetTrainingExamplesInput = document.getElementById('dataset-training-examples');
+      const datasetValidationExamplesInput = document.getElementById('dataset-validation-examples');
+      const trainModelNameInput = document.getElementById('train-model-name');
+      const trainModelVersionInput = document.getElementById('train-model-version');
+      const trainModelNotesInput = document.getElementById('train-model-notes');
+      const explainModelNameInput = document.getElementById('explain-model-name');
+      const explainModelVersionInput = document.getElementById('explain-model-version');
+      const registerDatasetButton = document.getElementById('register-dataset');
+      const trainDatasetButton = document.getElementById('train-from-dataset');
+      const refreshDatasetsButton = document.getElementById('refresh-datasets');
+      const fillDatasetSampleButton = document.getElementById('fill-dataset-sample');
+      const registerDemoModelButton = document.getElementById('register-demo-model');
+      const reasonModelNameInput = document.getElementById('reason-model-name');
+      const reasonModelVersionInput = document.getElementById('reason-model-version');
+      const reasonVirusInput = document.getElementById('reason-virus');
+      const reasonMutationInput = document.getElementById('reason-mutation');
+      const reasonReferenceGenomeInput = document.getElementById('reason-reference-genome');
+      const reasonGeneAnnotationsInput = document.getElementById('reason-gene-annotations');
+      const reasonEntropyInput = document.getElementById('reason-entropy');
+      const reasonPopulationFrequencyInput = document.getElementById('reason-population-frequency');
+      const reasonButton = document.getElementById('reason-button');
+      const reasonSampleButton = document.getElementById('reason-sample-button');
+      const refreshPluginDataButton = document.getElementById('refresh-plugin-data');
+      const runValidationButton = document.getElementById('run-validation');
+      const benchmarkStatus = document.getElementById('benchmark-status');
+      const benchmarkList = document.getElementById('benchmark-list');
+      const benchmarkResults = document.getElementById('benchmark-results');
+      const pluginDataList = document.getElementById('plugin-data-list');
+      const comparisonWorkspaceIdInput = document.getElementById('comparison-workspace-id');
+      const comparisonReferenceGenomeInput = document.getElementById('comparison-reference-genome');
+      const comparisonStatus = document.getElementById('comparison-status');
+      const comparisonSummary = document.getElementById('comparison-summary');
+      const ncbiSearchTermInput = document.getElementById('ncbi-search-term');
+      const genomicSourceSelectInput = document.getElementById('genomic-source-select');
+      const ncbiFileUploadInput = document.getElementById('ncbi-file-upload');
+      const ncbiStatus = document.getElementById('ncbi-status');
+      const ncbiSearchResults = document.getElementById('ncbi-search-results');
+      const ncbiLibraryList = document.getElementById('ncbi-library-list');
+      const ncbiUploadedList = document.getElementById('ncbi-uploaded-list');
+
+      async function fetchJson(url, options) {
+        const response = await fetch(url, options);
+        const payload = await response.json().catch(() => ({}));
+        if (!response.ok) {
+          throw new Error(payload.detail || payload.error || 'Request failed');
+        }
+        return payload;
+      }
+
+      async function loadTemplates() {
+        try {
+          state.templates = await fetchJson('/workflows/templates/metadata');
+          renderTemplates();
+        } catch (error) {
+          workflowDescription.textContent = 'Unable to load templates: ' + error.message;
+        }
+      }
+
+      function renderTemplates() {
+        templateSelect.innerHTML = '';
+        state.templates.forEach((template, index) => {
+          const option = document.createElement('option');
+          option.value = template.template;
+          option.textContent = template.display_name;
+          if (index === 0) option.selected = true;
+          templateSelect.appendChild(option);
+        });
+        updateSelectedTemplate();
+      }
+
+      function updateSelectedTemplate() {
+        const selected = state.templates.find((item) => item.template === templateSelect.value);
+        state.currentTemplate = selected;
+        if (!selected) return;
+        workflowDescription.textContent = selected.description;
+        renderFormFields(selected.fields);
+      }
+
+      function renderFormFields(fields) {
+        state.currentFields = fields;
+        workflowForm.innerHTML = '';
+        fields.forEach((field) => {
+          const fieldWrapper = document.createElement('div');
+          fieldWrapper.className = 'field';
+          const label = document.createElement('label');
+          label.textContent = field.label + (field.required ? ' *' : '');
+          fieldWrapper.appendChild(label);
+
+          let input;
+          if (field.type === 'json') {
+            input = document.createElement('textarea');
+            input.rows = 5;
+          } else {
+            input = document.createElement('input');
+            input.type = 'text';
+          }
+
+          input.id = `field-${field.name}`;
+          input.dataset.name = field.name;
+          input.placeholder = field.description;
+          if (!field.required) input.dataset.optional = 'true';
+          fieldWrapper.appendChild(input);
+
+          const hint = document.createElement('small');
+          hint.textContent = field.description;
+          fieldWrapper.appendChild(hint);
+          workflowForm.appendChild(fieldWrapper);
+        });
+      }
+
+      function getFormData() {
+        const params = {};
+        let error = null;
+        state.currentFields.forEach((field) => {
+          const el = document.getElementById(`field-${field.name}`);
+          const rawValue = el?.value?.trim();
+          if (!rawValue && field.required) {
+            error = `Missing required field: ${field.label}`;
+            return;
+          }
+          if (!rawValue) return;
+          if (field.type === 'json') {
+            try {
+              params[field.name] = JSON.parse(rawValue);
+            } catch (parseError) {
+              error = `Field ${field.label} must be valid JSON.`;
+            }
+          } else {
+            params[field.name] = rawValue;
+          }
+        });
+        return { params, error };
+      }
+
+      function showStatus(message, level = 'info') {
+        workflowStatus.style.display = 'block';
+        workflowStatus.innerHTML = `<div class="alert"><span>${message}</span></div>`;
+      }
+
+      async function runWorkflow() {
+        formError.textContent = '';
+        workflowStatus.style.display = 'none';
+        const { params, error } = getFormData();
+        if (error) {
+          formError.textContent = error;
+          return;
+        }
+
+        if (!state.currentTemplate) {
+          formError.textContent = 'Please select a workflow template.';
+          return;
+        }
+
+        showStatus('Submitting workflow...', 'info');
+        try {
+          const run = await fetchJson('/workflows/templates/run', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ template: state.currentTemplate.template, params }),
+          });
+          state.runId = run.run_id;
+          state.jobId = run.job_id;
+          showStatus(`Workflow submitted. Run ID: ${run.run_id}`);
+          pollJob(run.job_id);
+          refreshRunHistory();
+        } catch (submitError) {
+          formError.textContent = submitError.message;
+        }
+      }
+
+      async function pollJob(jobId) {
+        workflowStatus.innerHTML = `<div class="alert"><span>Waiting for job status…</span><span class="spinner"></span></div>`;
+        let status = 'queued';
+        for (let attempt = 0; attempt < 15 && status === 'queued'; attempt += 1) {
+          await new Promise((resolve) => setTimeout(resolve, 500));
+          try {
+            const job = await fetchJson(`/workflows/jobs/${jobId}`);
+            status = job.status;
+            const label = status === 'completed' ? 'success' : status === 'failed' ? 'danger' : 'warning';
+            workflowStatus.innerHTML = `<div class="alert"><span>${job.name} is ${job.status}.</span></div>`;
+            if (status !== 'queued') break;
+          } catch (error) {
+            workflowStatus.innerHTML = `<div class="alert"><span>${error.message}</span></div>`;
+            return;
+          }
+        }
+        if (status === 'queued') {
+          workflowStatus.innerHTML = `<div class="alert"><span>Still queued after 7 seconds. The job is running in the background.</span></div>`;
+        }
+      }
+
+      async function refreshRunHistory() {
+        try {
+          const records = await fetchJson('/workflows/runs');
+          state.history = records.slice(0, 6);
+          renderRunHistory();
+        } catch (error) {
+          runHistory.innerHTML = `<div class="field-error">Unable to load run history: ${error.message}</div>`;
+        }
+      }
+
+      function renderRunHistory() {
+        if (!state.history.length) {
+          runHistory.innerHTML = '<p style="color: var(--muted);">No runs yet. Submit a workflow to see it listed here.</p>';
+          return;
+        }
+        runHistory.innerHTML = state.history.map((record) => `
+          <div class="plugin-item">
+            <strong>${record.template || record.workflow_name} — ${record.status}</strong>
+            <div>Run ID: ${record.run_id}</div>
+            <div>Created: ${new Date(record.created_at).toLocaleString()}</div>
+            ${record.analysis_id ? `<div>Analysis ID: ${record.analysis_id}</div>` : ''}
+            ${record.job_id ? `<div>Job ID: ${record.job_id}</div>` : ''}
+          </div>
+        `).join('');
+      }
+
+      function showDatasetStatus(message, isError = false) {
+        datasetStatus.style.display = 'block';
+        datasetStatus.innerHTML = `<div class="alert" style="background: ${isError ? 'rgba(255,111,111,0.12)' : 'rgba(92,226,255,0.08)'}; border-color: ${isError ? 'rgba(255,111,111,0.18)' : 'rgba(92,226,255,0.18)'};"><span>${message}</span></div>`;
+      }
+
+      async function loadDatasets() {
+        try {
+          const records = await fetchJson('/ai/datasets');
+          if (!Array.isArray(records) || records.length === 0) {
+            datasetList.innerHTML = '<div class="plugin-item"><strong>No datasets registered</strong><div>Register a new dataset to begin training models.</div></div>';
+            return;
+          }
+          datasetList.innerHTML = records
+            .map((record) => `
+              <div class="plugin-item">
+                <strong>${record.name} / ${record.version}</strong>
+                <div>${record.description || 'No description provided'}</div>
+                <div style="margin-top: 8px; color: var(--muted);">Training samples: ${record.training_example_count}, Validation samples: ${record.validation_example_count}, Split: ${record.validation_split}</div>
+              </div>
+            `)
+            .join('');
+        } catch (error) {
+          datasetList.innerHTML = `<div class="field-error">Unable to load datasets: ${error.message}</div>`;
+        }
+      }
+
+      function getAuthHeaders(includeJsonContentType = true) {
+        const apiKey = apiKeyInput.value.trim();
+        const headers = includeJsonContentType ? { 'Content-Type': 'application/json' } : {};
+        if (apiKey) {
+          headers['X-API-Key'] = apiKey;
+        }
+        return headers;
+      }
+
+      // Admin Tools: prompt for admin API key and reveal admin-only UI when validated
+      if (adminToggle) {
+        adminToggle.addEventListener('click', async () => {
+          const key = prompt('Enter admin API key (X-API-Key) to reveal admin tools:');
+          if (!key) return;
+          try {
+            const res = await fetch('/admin/api-keys', { headers: { 'X-API-Key': key } });
+            if (!res.ok) throw new Error('Not authorized');
+            // store key in the hidden api key input for subsequent admin actions
+            apiKeyInput.value = key;
+            aiDatasetPanel.style.display = '';
+            alert('Admin tools unlocked');
+          } catch (err) {
+            alert('Admin authentication failed: ' + err.message);
+          }
+        });
+      }
+
+      function parseJsonField(element, defaultValue) {
+        const rawValue = element.value.trim();
+        if (!rawValue) {
+          return defaultValue;
+        }
+        try {
+          return JSON.parse(rawValue);
+        } catch (error) {
+          throw new Error(`Invalid JSON for ${element.previousElementSibling?.textContent || element.id}`);
+        }
+      }
+
+      async function registerDataset() {
+        try {
+          showDatasetStatus('Registering dataset...');
+          const trainingExamples = parseJsonField(datasetTrainingExamplesInput, []);
+          const validationExamples = parseJsonField(datasetValidationExamplesInput, []);
+          const payload = {
+            name: datasetNameInput.value.trim(),
+            version: datasetVersionInput.value.trim(),
+            description: datasetDescriptionInput.value.trim(),
+            training_examples: trainingExamples,
+            validation_examples: validationExamples,
+            validation_split: Number(datasetValidationSplitInput.value) || 0.0,
+          };
+          const record = await fetchJson('/ai/datasets', {
+            method: 'POST',
+            headers: getAuthHeaders(),
+            body: JSON.stringify(payload),
+          });
+          showDatasetStatus(`Registered dataset ${record.name} / ${record.version}`);
+          await loadDatasets();
+        } catch (error) {
+          showDatasetStatus(error.message, true);
+        }
+      }
+
+      async function trainModelFromDataset() {
+        try {
+          showDatasetStatus('Submitting training request...');
+          const payload = {
+            model_name: trainModelNameInput.value.trim(),
+            model_version: trainModelVersionInput.value.trim(),
+            notes: trainModelNotesInput.value.trim(),
+            use_validation: !!datasetValidationExamplesInput.value.trim(),
+          };
+          const datasetName = datasetNameInput.value.trim();
+          const datasetVersion = datasetVersionInput.value.trim();
+          if (!datasetName || !datasetVersion) {
+            throw new Error('Dataset name and version are required to train a model');
+          }
+          const response = await fetchJson(`/ai/datasets/${encodeURIComponent(datasetName)}/${encodeURIComponent(datasetVersion)}/train`, {
+            method: 'POST',
+            headers: getAuthHeaders(),
+            body: JSON.stringify(payload),
+          });
+          showDatasetStatus(`Model trained: ${response.model_record.name} / ${response.model_record.version}`);
+          await loadDatasets();
+        } catch (error) {
+          showDatasetStatus(error.message, true);
+        }
+      }
+
+      function fillDatasetSample() {
+        datasetNameInput.value = 'viral-dataset';
+        datasetVersionInput.value = '1.0.0';
+        datasetDescriptionInput.value = 'Test dataset for training';
+        datasetValidationSplitInput.value = '0.0';
+        datasetTrainingExamplesInput.value = JSON.stringify([
+          {
+            mutation: { position: 10, reference_base: 'A', observed_base: 'T', mutation_type: 'substitution', confidence_score: 0.9 },
+            context: { genome_length: 100, entropy_at_position: 0.2, population_frequency: 0.1 },
+            label: 1,
+          },
+        ], null, 2);
+        datasetValidationExamplesInput.value = '[]';
+        trainModelNameInput.value = 'dataset-trained-model';
+        trainModelVersionInput.value = '0.1.0';
+        trainModelNotesInput.value = 'Trained from dataset';
+      }
+
+      async function registerDemoModel() {
+        try {
+          showDatasetStatus('Registering demo model...');
+          const record = await fetchJson('/ai/models/demo/register', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+          });
+          showDatasetStatus(`Registered demo model ${record.name} / ${record.version}`);
+          explainModelNameInput.value = record.name;
+          explainModelVersionInput.value = record.version;
+        } catch (error) {
+          showDatasetStatus(error.message, true);
+        }
+      }
+
+      function showNCBIStatus(message, isError = false) {
+        ncbiStatus.style.display = 'block';
+        ncbiStatus.innerHTML = `<div class="alert" style="background: ${isError ? 'rgba(255,111,111,0.12)' : 'rgba(92,226,255,0.08)'}; border-color: ${isError ? 'rgba(255,111,111,0.18)' : 'rgba(92,226,255,0.18)'};"><span>${message}</span></div>`;
+      }
+
+      function getSelectedGenomicSource() {
+        return (genomicSourceSelectInput?.value || 'ncbi').toLowerCase();
+      }
+
+      function saveGenomicSearchState(term, source, results) {
+        try {
+          window.localStorage.setItem(genomicStorageKeys.term, term || '');
+          window.localStorage.setItem(genomicStorageKeys.source, source || 'ncbi');
+          window.localStorage.setItem(genomicStorageKeys.results, JSON.stringify(results || []));
+        } catch (error) {
+          console.warn('Unable to persist genomic search state:', error);
+        }
+      }
+
+      function loadGenomicSearchState() {
+        try {
+          const term = window.localStorage.getItem(genomicStorageKeys.term) || '';
+          const source = window.localStorage.getItem(genomicStorageKeys.source) || 'ncbi';
+          const rawResults = window.localStorage.getItem(genomicStorageKeys.results);
+          const results = rawResults ? JSON.parse(rawResults) : [];
+          return { term, source, results };
+        } catch (error) {
+          console.warn('Unable to restore genomic search state:', error);
+          return { term: '', source: 'ncbi', results: [] };
+        }
+      }
+
+      function restoreGenomicSearchState() {
+        const { term, source, results } = loadGenomicSearchState();
+        if (term) {
+          ncbiSearchTermInput.value = term;
+        }
+        if (source) {
+          genomicSourceSelectInput.value = source;
+        }
+        if (Array.isArray(results) && results.length > 0) {
+          renderNCBISearchResults(results);
+          showNCBIStatus(`Restored ${results.length} saved result${results.length === 1 ? '' : 's'} from the last search.`);
+        }
+      }
+
+      function getGenomicSourceLabel(source) {
+        switch (source) {
+          case 'ena':
+            return 'ENA';
+          case 'ddbj':
+            return 'DDBJ';
+          case 'ebisearch':
+            return 'EBI Search';
+          default:
+            return 'NCBI';
+        }
+      }
+
+      function buildGenomicSourceUrl(source, query) {
+        const value = encodeURIComponent(query || '');
+        switch (source) {
+          case 'ena':
+            return value ? `https://www.ebi.ac.uk/ena/browser/search?query=${value}` : 'https://www.ebi.ac.uk/ena/browser/';
+          case 'ddbj':
+            return value ? `https://ddbj.nig.ac.jp/search?query=${value}` : 'https://ddbj.nig.ac.jp/';
+          case 'ebisearch':
+            return value ? `https://www.ebi.ac.uk/ebisearch/search.ebi?db=allebi&request=${value}` : 'https://www.ebi.ac.uk/ebisearch/';
+          default:
+            return null;
+        }
+      }
+
+      function renderNCBISearchResults(results) {
+        if (!Array.isArray(results) || results.length === 0) {
+          ncbiSearchResults.innerHTML = '<div class="plugin-item"><strong>No genomic results</strong><div>Try another query or accession.</div></div>';
+          return;
+        }
+        ncbiSearchResults.innerHTML = results.map((item) => `
+          <div class="plugin-item">
+            <strong>${item.accession}</strong>
+            <div>${item.title || 'No title available'}</div>
+            <div style="margin-top:10px; color: var(--muted);">Source: ${item.source} • Database: ${item.database || 'unknown'} • Length: ${item.sequence_length || 'n/a'}</div>
+            <div style="margin-top:10px; color: var(--muted);">Organism: ${item.organism || 'unknown'} • UID: ${item.uid}</div>
+            <div style="margin-top:10px; display:flex; gap:10px; flex-wrap:wrap;">
+              <a class="btn btn-secondary" href="${item.source_url}" target="_blank" rel="noopener noreferrer">Open source</a>
+              ${item.download_url ? `<a class="btn btn-secondary" href="${item.download_url}" target="_blank" rel="noopener noreferrer">Open record</a>` : ''}
+              <button class="btn btn-secondary" data-source="${(item.database || item.source || '').toLowerCase()}" data-download-url="${item.download_url || ''}" data-uid="${item.uid}" data-accession="${item.accession}" onclick="window.ViralAI.downloadNCBI(this)">${(item.database || item.source || '').toLowerCase() === 'ncbi' ? 'Download FASTA' : 'Open in source'}</button>
+              <button class="btn btn-secondary" data-accession="${item.accession}" onclick="window.ViralAI.importNCBI(this)">Import accession</button>
+            </div>
+          </div>
+        `).join('');
+      }
+
+      function renderGenomicLibrary(entries) {
+        if (!Array.isArray(entries) || entries.length === 0) {
+          ncbiLibraryList.innerHTML = '<div class="plugin-item"><strong>No imported NCBI library entries</strong><div>Import an accession to populate the genomic library.</div></div>';
+          return;
+        }
+        ncbiLibraryList.innerHTML = entries.map((entry) => `
+          <div class="plugin-item">
+            <strong>${entry.accession}</strong>
+            <div>${entry.title || 'No title available'}</div>
+            <div style="margin-top:10px; color: var(--muted);">Organism: ${entry.organism || 'unknown'} • Imported: ${new Date(entry.imported_at).toLocaleString()}</div>
+            <div style="margin-top:10px; color: var(--muted);">Filename: ${entry.filename} • ${entry.size_bytes} bytes</div>
+            <div style="margin-top:10px; display:flex; gap:10px; flex-wrap:wrap;"><button class="btn btn-secondary" data-filename="${entry.filename}" onclick="window.ViralAI.downloadLibraryEntry(this)">Download</button></div>
+          </div>
+        `).join('');
+      }
+
+      function renderUploadedGenomes(files) {
+        if (!Array.isArray(files) || files.length === 0) {
+          ncbiUploadedList.innerHTML = '<div class="plugin-item"><strong>No uploaded FASTA files</strong><div>Upload a FASTA file to see it here.</div></div>';
+          return;
+        }
+        ncbiUploadedList.innerHTML = files.map((file) => `
+          <div class="plugin-item">
+            <strong>${file.filename}</strong>
+            <div>${file.path}</div>
+            <div style="margin-top:10px; color: var(--muted);">${file.size_bytes} bytes</div>
+            <div style="margin-top:10px; display:flex; gap:10px; flex-wrap:wrap;"><button class="btn btn-secondary" data-filename="${file.filename}" onclick="window.ViralAI.downloadUploaded(this)">Download file</button></div>
+          </div>
+        `).join('');
+      }
+
+      async function loadUploadedGenomes() {
+        try {
+          const files = await fetchJson('/genomic/uploads');
+          renderUploadedGenomes(files);
+        } catch (error) {
+          renderUploadedGenomes([]);
+          showNCBIStatus(error.message, true);
+        }
+      }
+
+      async function loadGenomicLibrary() {
+        try {
+          const entries = await fetchJson('/genomic/library');
+          renderGenomicLibrary(entries);
+        } catch (error) {
+          renderGenomicLibrary([]);
+          showNCBIStatus(error.message, true);
+        }
+      }
+
+      async function importNCBISequence(accession) {
+        try {
+          showNCBIStatus(`Importing accession ${accession}...`);
+          const result = await fetchJson(`/genomic/import?accession=${encodeURIComponent(accession)}`);
+          showNCBIStatus(result.message);
+          await loadGenomicLibrary();
+        } catch (error) {
+          showNCBIStatus(error.message, true);
+        }
+      }
+
+      async function searchNCBI() {
+        try {
+          const term = ncbiSearchTermInput.value.trim();
+          const source = getSelectedGenomicSource();
+          if (!term) {
+            throw new Error('Enter a search term or accession first.');
+          }
+          const sourceLabel = getGenomicSourceLabel(source);
+          showNCBIStatus(`Searching ${sourceLabel}...`);
+          const results = await fetchJson(`/genomic/search?term=${encodeURIComponent(term)}&databases=${encodeURIComponent(source)}`);
+          renderNCBISearchResults(results);
+          saveGenomicSearchState(term, source, results);
+          showNCBIStatus(`Found ${results.length} result${results.length === 1 ? '' : 's'} from ${sourceLabel}.`);
+        } catch (error) {
+          showNCBIStatus(error.message, true);
+        }
+      }
+
+      async function uploadGenomicFile() {
+        try {
+          showNCBIStatus('Uploading FASTA file...');
+          const file = ncbiFileUploadInput.files[0];
+          if (!file) {
+            throw new Error('Choose a FASTA file to upload first.');
+          }
+          const formData = new FormData();
+          formData.append('file', file);
+          const response = await fetch('/genomic/upload', {
+            method: 'POST',
+            body: formData,
+          });
+          const payload = await response.json();
+          if (!response.ok) {
+            throw new Error(payload.detail || 'Upload failed');
+          }
+          showNCBIStatus(payload.message);
+          await loadUploadedGenomes();
+        } catch (error) {
+          showNCBIStatus(error.message, true);
+        }
+      }
+
+      function showComparisonStatus(message, isError = false) {
+        comparisonStatus.style.display = 'block';
+        comparisonStatus.innerHTML = `<div class="alert" style="background: ${isError ? 'rgba(255,111,111,0.12)' : 'rgba(92,226,255,0.08)'}; border-color: ${isError ? 'rgba(255,111,111,0.18)' : 'rgba(92,226,255,0.18)'};"><span>${message}</span></div>`;
+      }
+
+      async function queueWorkspaceComparison() {
+        try {
+          const workspaceId = comparisonWorkspaceIdInput.value.trim();
+          const referenceGenome = comparisonReferenceGenomeInput.value.trim();
+          const file = ncbiFileUploadInput.files[0];
+          if (!workspaceId) {
+            throw new Error('Enter a workspace project ID first.');
+          }
+          if (!referenceGenome) {
+            throw new Error('Enter a reference genome first.');
+          }
+          if (!file) {
+            throw new Error('Choose a FASTA file to compare first.');
+          }
+
+          showComparisonStatus('Queueing workspace comparison...');
+          const formData = new FormData();
+          formData.append('reference_genome', referenceGenome);
+          formData.append('file', file);
+          const response = await fetch(`/workspaces/${encodeURIComponent(workspaceId)}/comparisons`, {
+            method: 'POST',
+            headers: getAuthHeaders(false),
+            body: formData,
+          });
+          const payload = await response.json().catch(() => ({}));
+          if (!response.ok) {
+            throw new Error(payload.detail || 'Comparison request failed');
+          }
+          showComparisonStatus(`Queued comparison for ${payload.analysis_name}.`);
+          comparisonSummary.innerHTML = '<div class="plugin-item"><strong>Waiting for completion…</strong><div>The comparison is running in the background. This panel will update automatically.</div></div>';
+          await pollComparisonStatus(workspaceId, payload.analysis_name);
+        } catch (error) {
+          showComparisonStatus(error.message, true);
+        }
+      }
+
+      async function pollComparisonStatus(projectId, analysisName) {
+        for (let attempt = 0; attempt < 12; attempt += 1) {
+          await new Promise((resolve) => setTimeout(resolve, 700));
+          try {
+            const payload = await fetchJson(`/workspaces/${encodeURIComponent(projectId)}/comparisons/${encodeURIComponent(analysisName)}`);
+            if (payload.status === 'completed') {
+              const mutationCount = Array.isArray(payload.mutations) ? payload.mutations.length : 0;
+              comparisonSummary.innerHTML = `
+                <div class="plugin-item">
+                  <strong>Comparison completed</strong>
+                  <div>Analysis: ${payload.analysis_name}</div>
+                  <div>Mutations detected: ${mutationCount}</div>
+                  ${payload.filename ? `<div>Filename: ${payload.filename}</div>` : ''}
+                </div>`;
+              showComparisonStatus(`Comparison completed with ${mutationCount} detected mutation${mutationCount === 1 ? '' : 's'}.`);
+              return;
+            }
+            if (payload.status === 'failed') {
+              showComparisonStatus('The comparison job failed.', true);
+              return;
+            }
+          } catch (error) {
+            showComparisonStatus(error.message, true);
+            return;
+          }
+        }
+        comparisonSummary.innerHTML = '<div class="plugin-item"><strong>Comparison still running</strong><div>The job is still processing in the background. Refresh later to inspect the stored analysis.</div></div>';
+      }
+
+      async function downloadNCBIActiveSearch() {
+        try {
+          const query = ncbiSearchTermInput.value.trim();
+          const source = getSelectedGenomicSource();
+          if (!query) {
+            throw new Error('Enter an accession or search term first.');
+          }
+          const sourceLabel = getGenomicSourceLabel(source);
+          showNCBIStatus(`Fetching from ${sourceLabel}...`);
+          if (source === 'ncbi') {
+            window.open(`/genomic/download?accession=${encodeURIComponent(query)}&uid=${encodeURIComponent(query)}`, '_blank');
+            return;
+          }
+          const externalUrl = buildGenomicSourceUrl(source, query);
+          if (!externalUrl) {
+            throw new Error(`Downloads are not available for ${sourceLabel} yet.`);
+          }
+          window.open(externalUrl, '_blank');
+        } catch (error) {
+          showNCBIStatus(error.message, true);
+        }
+      }
+
+      window.ViralAI = {
+        downloadNCBI: async (button) => {
+          const uid = button.dataset.uid;
+          const accession = button.dataset.accession;
+          const source = (button.dataset.source || getSelectedGenomicSource()).toLowerCase();
+          const fallbackUrl = button.dataset.downloadUrl || '';
+          if (!uid && !accession) return;
+          if (source === 'ncbi') {
+            window.open(`/genomic/download?uid=${encodeURIComponent(uid)}&accession=${encodeURIComponent(accession)}`, '_blank');
+            return;
+          }
+          const externalUrl = fallbackUrl || buildGenomicSourceUrl(source, accession || uid);
+          if (externalUrl) {
+            window.open(externalUrl, '_blank');
+          }
+        },
+        importNCBI: async (button) => {
+          const accession = button.dataset.accession;
+          if (!accession) return;
+          await importNCBISequence(accession);
+        },
+        downloadLibraryEntry: async (button) => {
+          const filename = button.dataset.filename;
+          if (!filename) return;
+          window.open(`/genomic/library/${encodeURIComponent(filename)}`, '_blank');
+        },
+        downloadUploaded: async (button) => {
+          const filename = button.dataset.filename;
+          if (!filename) return;
+          window.open(`/genomic/uploads/${encodeURIComponent(filename)}`, '_blank');
+        },
+      };
+
+      async function loadBenchmarkDatasets() {
+        try {
+          const datasets = await fetchJson('/benchmark/datasets');
+          if (!Array.isArray(datasets) || datasets.length === 0) {
+            benchmarkList.innerHTML = '<div class="plugin-item"><strong>No benchmark datasets available</strong><div>Install benchmark data or verify your installation.</div></div>';
+            return;
+          }
+          benchmarkList.innerHTML = datasets.map((dataset) => `
+            <div class="plugin-item">
+              <strong>${dataset.name}</strong>
+              <div>${dataset.notes || 'No notes available'}</div>
+              <div style="margin-top:10px; color: var(--muted);">Category: ${dataset.category} • Virus: ${dataset.virus} • Synthetic: ${dataset.is_synthetic}</div>
+              <div style="margin-top:6px; color: var(--muted);">Reference: ${dataset.reference_genome.length} bases${dataset.query_genome ? ` • Query: ${dataset.query_genome.length} bases` : ''}</div>
+            </div>
+          `).join('');
+        } catch (error) {
+          benchmarkList.innerHTML = `<div class="field-error">Unable to load benchmark datasets: ${error.message}</div>`;
+        }
+      }
+
+      async function loadBenchmarkResults() {
+        try {
+          const results = await fetchJson('/benchmark/latest');
+          if (!Array.isArray(results) || results.length === 0) {
+            benchmarkResults.innerHTML = '<div class="plugin-item"><strong>No benchmark results yet</strong><div>Run validation benchmarks to see your latest engine performance.</div></div>';
+            return;
+          }
+          benchmarkResults.innerHTML = results.map((result) => `
+            <div class="plugin-item">
+              <strong>${result.dataset_name}</strong>
+              <div style="margin-top:10px; color: var(--muted);">Run at: ${new Date(result.run_at).toLocaleString()} • Version: ${result.software_version}</div>
+              <div style="margin-top:12px;">${result.metrics.map((metric) => `<div>${metric.metric_name}: ${metric.actual} / ${metric.expected} ${metric.passed ? '✅' : '❌'}</div>`).join('')}</div>
+            </div>
+          `).join('');
+        } catch (error) {
+          benchmarkResults.innerHTML = `<div class="field-error">Unable to load benchmark results: ${error.message}</div>`;
+        }
+      }
+
+      async function runValidationBenchmarks() {
+        try {
+          benchmarkStatus.style.display = 'block';
+          benchmarkStatus.innerHTML = `<div class="alert"><span>Running validation benchmarks…</span><span class="spinner"></span></div>`;
+          const results = await fetchJson('/benchmark/run', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+          });
+          benchmarkStatus.innerHTML = `<div class="alert"><span>Validation completed: ${results.length} dataset results.</span></div>`;
+          await loadBenchmarkResults();
+        } catch (error) {
+          benchmarkStatus.innerHTML = `<div class="field-error">${error.message}</div>`;
+        }
+      }
+
+      function fillSampleValues() {
+        if (!state.currentTemplate) return;
+        const defaults = {
+          mutation_analysis: {
+            reference_genome: 'ACGTACGTACGT',
+            query_genome: 'ACGTTCGTACGT',
+            gene_annotations: JSON.stringify([{ gene: 'geneA', start: 1, end: 4 }], null, 2),
+          },
+          evolutionary_analysis: {
+            reference_genome: 'ACGTACGTACGT',
+            query_genome: 'ACGTTCGTACGT',
+            gene_annotations: JSON.stringify([{ gene: 'geneA', start: 1, end: 4 }], null, 2),
+            aligned_population: JSON.stringify(['ACGTACGTACGT', 'ACGTTCGTACGT', 'ACGTACTTACGT'], null, 2),
+          },
+          pandemic_surveillance: {
+            reference_genome: 'ACGTACGTACGT',
+            query_genomes: JSON.stringify(['ACGTTCGTACGT','ACGTACTTACGT','ACGTTTGTACGT'], null, 2),
+          },
+          cancer_research: {
+            reference_genome: 'ACGTACGTACGT',
+            query_genome: 'ACGTTCGTACGT',
+            gene_annotations: JSON.stringify([{ gene: 'TP53', start: 1, end: 4 }], null, 2),
+            virus: 'HPV16',
+            gene: 'E6',
+          },
+          hiv_research: {
+            reference_genome: 'ACGTACGTACGT',
+            query_genome: 'ACGTTCGTACGT',
+            aligned_population: JSON.stringify(['ACGTACGTACGT','ACGTACTTACGT','ACGTTTGTACGT'], null, 2),
+            virus: 'HIV-1',
+            gene: 'gag',
+          },
+          simulation: {
+            name: 'test-experiment',
+            version: 'v1',
+            reference_genome: 'ACGTACGTACGT',
+            config: JSON.stringify({ population_size: 50, generations: 5, mutation_rate: 0.01, seed: 42 }, null, 2),
+            notes: 'Sample simulation run',
+          },
+        };
+
+        const sample = defaults[state.currentTemplate.template] || {};
+        state.currentFields.forEach((field) => {
+          const input = document.getElementById(`field-${field.name}`);
+          if (input && sample[field.name] !== undefined) {
+            input.value = sample[field.name];
+          }
+        });
+      }
+
+      async function loadPlugins() {
+        try {
+          const plugins = await fetchJson('/api/plugins/summary');
+          if (!Array.isArray(plugins) || plugins.length === 0) {
+            pluginList.innerHTML = '<div class="plugin-item"><strong>No plugins found</strong><div>Install a plugin manifest under the plugins directory to see available capabilities.</div></div>';
+            pluginDataList.innerHTML = pluginList.innerHTML;
+            return;
+          }
+          const pluginHtml = plugins.map((plugin) => `
+            <div class="plugin-item">
+              <strong>${plugin.name}</strong>
+              <div>${plugin.description}</div>
+              <div style="margin-top:10px; color: var(--muted);">Tier ${plugin.tier} • ${plugin.viruses.join(', ')}</div>
+              ${plugin.reference_genome_accession ? `<div style="margin-top:8px; color: var(--muted);">Reference accession: ${plugin.reference_genome_accession}</div>` : ''}
+            </div>
+          `).join('');
+          pluginList.innerHTML = pluginHtml;
+          pluginDataList.innerHTML = pluginHtml;
+        } catch (error) {
+          const errorHtml = `<div class="plugin-item"><strong>Unable to load plugins</strong><div>${error.message}</div></div>`;
+          pluginList.innerHTML = errorHtml;
+          pluginDataList.innerHTML = errorHtml;
+        }
+      }
+
+      async function loadExplainability(values) {
+        explainabilityBox.style.display = 'block';
+        explainabilityBox.innerHTML = '<div class="alert"><span>Computing explainability…</span><span class="spinner"></span></div>';
+        try {
+          const modelName = explainModelNameInput.value.trim() || 'demo';
+          const modelVersion = explainModelVersionInput.value.trim() || '0.0.1';
+          const response = await fetch(`/ai/models/${encodeURIComponent(modelName)}/${encodeURIComponent(modelVersion)}/explain`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ feature_vector: values }),
+          });
+          const data = await response.json();
+          if (!response.ok) {
+            throw new Error(data.detail || 'Explainability request failed');
+          }
+          explainabilityBox.innerHTML = `
+            <div><strong>Top contributing features</strong></div>
+            <ul style="margin: 12px 0 0 18px;">${data.top_features.map((entry) => `<li>${entry.feature}: ${entry.value.toFixed(3)}</li>`).join('')}</ul>
+          `;
+        } catch (error) {
+          explainabilityBox.innerHTML = `<div class="field-error">${error.message}</div>`;
+        }
+      }
+
+      async function loadReasoning() {
+        reasoningBox.style.display = 'block';
+        reasoningBox.innerHTML = '<div class="alert"><span>Computing mutation reasoning…</span><span class="spinner"></span></div>';
+        try {
+          const payload = {
+            virus: reasonVirusInput.value.trim() || 'HPV16',
+            mutation: JSON.parse(reasonMutationInput.value),
+            reference_genome: reasonReferenceGenomeInput.value.trim() || undefined,
+            gene_annotations: JSON.parse(reasonGeneAnnotationsInput.value || '[]'),
+            genome_length: Number(reasonReferenceGenomeInput.value.trim().length) || 0,
+            entropy_at_position: Number(reasonEntropyInput.value) || 0.0,
+            population_frequency: Number(reasonPopulationFrequencyInput.value) || 0.0,
+          };
+
+          const modelName = reasonModelNameInput.value.trim() || 'demo';
+          const modelVersion = reasonModelVersionInput.value.trim() || '0.0.1';
+          const response = await fetch(`/ai/models/${encodeURIComponent(modelName)}/${encodeURIComponent(modelVersion)}/reason`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload),
+          });
+          const data = await response.json();
+          if (!response.ok) {
+            throw new Error(data.detail || 'Mutation reasoning request failed');
+          }
+          reasoningBox.innerHTML = `
+            <div><strong>AI reasoning</strong></div>
+            <div style="margin-top:12px;">${data.recommendation}</div>
+            <div style="margin-top:12px;"><strong>Mutation summary:</strong> ${data.mutation_summary}</div>
+            <div style="margin-top:12px;"><strong>Affected protein:</strong> ${data.affected_protein || 'unknown'}</div>
+            <div style="margin-top:12px;"><strong>Confidence:</strong> ${(data.ai_confidence * 100).toFixed(1)}%</div>
+            <div style="margin-top:12px;"><strong>Top contributing features:</strong><ul>${data.top_contributing_features.map((entry) => `<li>${entry.feature}: ${entry.value.toFixed(3)}</li>`).join('')}</ul></div>
+            <div style="margin-top:12px;"><strong>Literature citations:</strong> ${data.literature_citations.length ? data.literature_citations.join('; ') : 'none found'}</div>
+          `;
+        } catch (error) {
+          reasoningBox.innerHTML = `<div class="field-error">${error.message}</div>`;
+        }
+      }
+
+      function fillReasonSample() {
+        reasonVirusInput.value = 'HPV16';
+        reasonModelNameInput.value = 'demo';
+        reasonModelVersionInput.value = '0.0.1';
+        reasonMutationInput.value = JSON.stringify({
+          position: 3,
+          reference_base: 'G',
+          observed_base: 'A',
+          mutation_type: 'substitution',
+          confidence_score: 0.9,
+        }, null, 2);
+        reasonReferenceGenomeInput.value = 'ACGTACGTACGT';
+        reasonGeneAnnotationsInput.value = JSON.stringify([{ gene: 'E6', start: 1, end: 12 }], null, 2);
+        reasonEntropyInput.value = '0.2';
+        reasonPopulationFrequencyInput.value = '0.05';
+      }
+
+      document.getElementById('reload-templates').addEventListener('click', loadTemplates);
+      templateSelect.addEventListener('change', updateSelectedTemplate);
+      document.getElementById('run-template').addEventListener('click', runWorkflow);
+      document.getElementById('fill-sample').addEventListener('click', fillSampleValues);
+      document.getElementById('refresh-runs').addEventListener('click', refreshRunHistory);
+      registerDatasetButton.addEventListener('click', registerDataset);
+      trainDatasetButton.addEventListener('click', trainModelFromDataset);
+      refreshDatasetsButton.addEventListener('click', loadDatasets);
+      fillDatasetSampleButton.addEventListener('click', fillDatasetSample);
+      registerDemoModelButton.addEventListener('click', registerDemoModel);
+      reasonButton.addEventListener('click', loadReasoning);
+      reasonSampleButton.addEventListener('click', fillReasonSample);
+      refreshPluginDataButton.addEventListener('click', loadPlugins);
+      runValidationButton.addEventListener('click', runValidationBenchmarks);
+      genomicSourceSelectInput.addEventListener('change', () => {
+        saveGenomicSearchState(ncbiSearchTermInput.value.trim(), getSelectedGenomicSource(), []);
+      });
+      document.getElementById('search-ncbi').addEventListener('click', searchNCBI);
+      document.getElementById('download-ncbi').addEventListener('click', downloadNCBIActiveSearch);
+      document.getElementById('import-ncbi').addEventListener('click', async () => {
+        const accession = ncbiSearchTermInput.value.trim();
+        if (!accession) {
+          showNCBIStatus('Enter an accession to import first.', true);
+          return;
+        }
+        await importNCBISequence(accession);
+      });
+      document.getElementById('refresh-library').addEventListener('click', loadGenomicLibrary);
+      document.getElementById('upload-genome').addEventListener('click', uploadGenomicFile);
+      document.getElementById('queue-comparison').addEventListener('click', queueWorkspaceComparison);
+      document.getElementById('explain-button').addEventListener('click', async () => {
+        const values = featureVectorInput.value.split(',').map((value) => Number(value.trim())).filter((value) => !Number.isNaN(value));
+        if (values.length !== 12) {
+          explainabilityBox.style.display = 'block';
+          explainabilityBox.innerHTML = '<div class="field-error">Provide exactly 12 numeric values separated by commas.</div>';
+          return;
+        }
+        await loadExplainability(values);
+      });
+      document.getElementById('suggest-button').addEventListener('click', () => {
+        featureVectorInput.value = '0.2,1,0,0,0.9,0.1,0.0,1,0,1,0,0';
+        loadExplainability([0.2,1,0,0,0.9,0.1,0.0,1,0,1,0,0]);
+      });
+
+      loadTemplates();
+      loadPlugins();
+      loadBenchmarkDatasets();
+      loadBenchmarkResults();
+      refreshRunHistory();
+      loadDatasets();
+      loadUploadedGenomes();
+      loadGenomicLibrary();
+      restoreGenomicSearchState();
+      loadExplainability([0.2,1,0,0,0.9,0.1,0.0,1,0,1,0,0]);
+    </script>
+  </body>
+</html>

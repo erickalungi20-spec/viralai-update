@@ -1,0 +1,36 @@
+name: Sci-CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.11", "3.12"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Install package and test tools
+        run: python -m pip install --upgrade pip && python -m pip install -e ".[dev]"
+      - name: Lint
+        run: ruff check src tests plugins
+      - name: Unit and integration tests
+        run: pytest -m "unit or integration or plugin"
+      - name: System tests
+        run: pytest -m system
+      - name: Performance tests
+        run: pytest -m performance
+      - name: Plugin security gate
+        run: >-
+          python -c "from pathlib import Path; from viralai.security.plugin_scanner import is_clean, scan_plugin_directory;
+          results = {p.name: scan_plugin_directory(p) for p in Path('plugins').iterdir() if p.is_dir()};
+          assert all(is_clean(scan) for scan in results.values()), results"
+      - name: Benchmark gate
+        run: >-
+          python -c "from viralai.benchmarking.datasets import all_benchmark_datasets; from viralai.benchmarking.runner import run_all_benchmarks;
+          results = run_all_benchmarks(all_benchmark_datasets()); assert all(result.all_passed for result in results), results"

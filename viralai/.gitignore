@@ -1,0 +1,21 @@
+# Python build and test artifacts
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.ruff_cache/
+.coverage
+coverage.xml
+htmlcov/
+
+# Local environments and runtime state
+.venv/
+.viralai_cache/
+.viralai_api_data/
+pytest_full.log
+
+# Deployment secrets and generated assets
+.env
+*.pem
+*.key
+

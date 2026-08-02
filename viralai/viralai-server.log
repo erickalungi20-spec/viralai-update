@@ -1,0 +1,25 @@
+INFO:     Started server process [6632]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://127.0.0.1:8000 (Press CTRL+C to quit)
+2026-07-28 17:41:36,804 | INFO     | viralai.knowledge.store | knowledge base loaded from C:\Users\PC\Desktop\New folder\viralai-phases-0-to-10\viralai\.viralai_dev_data\knowledge_base: 0 references, 0 mutation entries, 0 protein entries
+INFO:     127.0.0.1:54865 - "GET /ready HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54874 - "GET / HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54874 - "POST /ai/models/mutation-hotspot/0.1.0/explain HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:54875 - "GET /api/plugins/summary HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54875 - "GET /favicon.ico HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:54880 - "POST /analysis/mutations HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54884 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54884 - "GET /openapi.json HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54892 - "POST /ai/models/mutation-hotspot/0.1.0/explain HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:54892 - "GET /api/plugins/summary HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54895 - "GET /docs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54895 - "GET /openapi.json HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54907 - "GET /docs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54907 - "GET /openapi.json HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54909 - "GET /api/plugins/summary HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54910 - "POST /ai/models/mutation-hotspot/0.1.0/explain HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:54913 - "GET /docs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54913 - "GET /openapi.json HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54917 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54917 - "POST /ai/models/mutation-hotspot/0.1.0/explain HTTP/1.1" 404 Not Found

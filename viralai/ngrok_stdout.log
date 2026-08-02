@@ -1,0 +1,11 @@
+t=2026-07-29T16:44:24+0300 lvl=info msg="no configuration paths supplied"
+t=2026-07-29T16:44:24+0300 lvl=info msg="ignoring default config path, could not stat it" path=C:\\Users\\PC/.ngrok2/ngrok.yml err="CreateFile C:\\Users\\PC/.ngrok2/ngrok.yml: The system cannot find the file specified."
+t=2026-07-29T16:44:24+0300 lvl=dbug msg="ignoring manifest file with unhandled mimetype" name=vendor.svg ext=.svg
+t=2026-07-29T16:44:24+0300 lvl=dbug msg="ignoring manifest file with unhandled mimetype" name=glyphicons-halflings-regular.svg ext=.svg
+t=2026-07-29T16:44:24+0300 lvl=dbug msg="starting component" obj=app name="signal handler"
+t=2026-07-29T16:44:24+0300 lvl=dbug msg="starting component" obj=app name=web
+t=2026-07-29T16:44:24+0300 lvl=info msg="starting web service" obj=web addr=127.0.0.1:4040
+t=2026-07-29T16:44:24+0300 lvl=dbug msg="starting component" obj=app name="Tunnel session"
+t=2026-07-29T16:44:24+0300 lvl=dbug msg="starting component" obj=app name=updater
+t=2026-07-29T16:44:24+0300 lvl=dbug msg="checking for updates periodically" obj=updater interval=6h0m0s
+t=2026-07-29T16:44:24+0300 lvl=dbug msg="check for update" obj=updater

@@ -1,0 +1,19 @@
+{
+  "_comment": "Functional domain boundaries (e.g. E7's LXCXE Rb-binding motif, E6's PDZ-binding motif) are well-documented in the literature but are deliberately left out here until this plugin sources exact residue coordinates from a citable primary reference, rather than reproduce a commonly-repeated figure from memory. Fill these in with a citation, not a guess -- see docs/PLUGIN_DEVELOPMENT_STANDARD.md section 2.",
+  "proteins": [
+    {
+      "protein_id": "E6",
+      "gene": "E6",
+      "functional_domains": [],
+      "known_function_summary": "Oncoprotein; degrades p53 in complex with host E6-AP. Domain boundaries: TODO, needs citation.",
+      "citations": []
+    },
+    {
+      "protein_id": "E7",
+      "gene": "E7",
+      "functional_domains": [],
+      "known_function_summary": "Oncoprotein; inactivates retinoblastoma protein (pRb) family members. Domain boundaries: TODO, needs citation.",
+      "citations": []
+    }
+  ]
+}

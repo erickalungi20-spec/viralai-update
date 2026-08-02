@@ -1,0 +1,21 @@
+{
+  "_comment": "Coordinates below are on the NC_001526.4 / K02718.1 reference numbering. Only entries with a citation are included -- the HPV16 genome has 8 protein-coding genes (L1, L2, E1, E2, E4, E5, E6, E7) per PMC3393538, but this plugin currently ships verified coordinates for E6 and E7 only. E1, E2, E4, E5, L1, L2 coordinates are TODO: add once sourced from a primary reference (e.g. the NCBI GenBank flat file CDS features for NC_001526.4) rather than guessed.",
+  "genes": [
+    {
+      "gene": "E6",
+      "start": 104,
+      "end": 559,
+      "strand": "+",
+      "product": "E6 oncoprotein",
+      "citation": "PubMed 37994701 -- IR E6 mRNA cistron nucleotides 104-559 on the HPV16 reference genome"
+    },
+    {
+      "gene": "E7",
+      "start": 562,
+      "end": 858,
+      "strand": "+",
+      "product": "E7 oncoprotein",
+      "citation": "PubMed 37994701 -- E7 cistron nucleotides 562-858 on the HPV16 reference genome"
+    }
+  ]
+}

@@ -1,0 +1,18 @@
+{
+  "name": "hpv16",
+  "version": "0.1.0",
+  "supported_viruses": ["HPV16"],
+  "compatible_core_engine_versions": ">=0.1.0",
+  "authors": ["ViralAI Project"],
+  "license": "Apache-2.0",
+  "certification_tier": "experimental",
+  "description": "Human Papillomavirus type 16 (HPV16) plugin. Ships gene coordinates for the E6 and E7 oncogenes, sourced from published literature. Reference genome sequence is not bundled -- see data/reference/README.md.",
+  "dependencies": [],
+  "reference_genome_accession": "NC_001526.4",
+  "reference_genome_citations": [
+    "GenBank RefSeq NC_001526.4 (HPV16 reference genome, 7906 bp) -- legacy GenBank accession K02718.1",
+    "Danos et al., 'HPV16 genome structure', cited genome length and 8-gene organization (L1, L2, E1, E2, E4, E5, E6, E7) plus LCR, PMC3393538",
+    "McLaughlin-Drubin lab / Cell 2017 (S0092-8674(17)30889-9): reference sequence length 7906 bp confirmed against NC_001526.4",
+    "IR E6/E7 cistron coordinates (E6: nt 104-559, E7: nt 562-858) as reported in PubMed 37994701 (splicing enhancer study), consistent with NC_001526 numbering used across cited literature"
+  ]
+}
