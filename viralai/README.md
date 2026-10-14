@@ -78,6 +78,38 @@ viralai list-plugins --plugins-dir plugins
 viralai dashboard --plugins-dir plugins --data-dir .viralai_api_data --run-benchmarks
 ```
 
+## Deployment (single-node production-ready local stack)
+
+This repository now includes a runnable container deployment path for the existing platform.
+
+### Prerequisites
+
+- Docker Desktop or Docker Engine
+- A generated Fernet key for `VIRALAI_ENCRYPTION_KEY`
+
+### Quick deploy
+
+```bash
+cp .env.example .env
+# edit .env and set VIRALAI_ENCRYPTION_KEY to a real Fernet key
+
+docker compose up --build -d
+```
+
+Then verify:
+
+```bash
+curl http://localhost:8000/ready
+```
+
+Bootstrap the first admin API key:
+
+```bash
+docker compose exec api viralai issue-api-key --label initial-admin --role admin
+```
+
+This uses the same file-backed API storage directory as the in-process service, while making the container start path consistent with the installed CLI and the deployment config.
+
 ## Repository layout
 
 ```

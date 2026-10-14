@@ -88,7 +88,16 @@ class TestExtractPositiveClassValues:
     def test_wrong_ndarray_shape_raises(self):
         from viralai.ai.explainability import _extract_positive_class_values
 
-        bad_shape = np.zeros((1, len(FEATURE_NAMES)))  # missing the class dimension
+        two_d = np.zeros((1, len(FEATURE_NAMES)))
+        result = _extract_positive_class_values(two_d, expected_rows=1)
+
+        assert result.shape == (1, len(FEATURE_NAMES))
+        assert np.all(result == 0.0)
+
+    def test_1d_ndarray_shape_raises(self):
+        from viralai.ai.explainability import _extract_positive_class_values
+
+        bad_shape = np.zeros((len(FEATURE_NAMES),))
         with pytest.raises(ValidationError):
             _extract_positive_class_values(bad_shape, expected_rows=1)
 

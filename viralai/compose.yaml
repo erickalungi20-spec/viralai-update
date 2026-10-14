@@ -2,6 +2,7 @@ services:
   api:
     build:
       context: .
+      dockerfile: Dockerfile
     image: viralai:local
     environment:
       VIRALAI_ENVIRONMENT: production
@@ -12,17 +13,14 @@ services:
       - "${VIRALAI_PORT:-8000}:8000"
     volumes:
       - viralai-data:/var/lib/viralai
-    read_only: true
-    tmpfs:
-      - /tmp
+    read_only: false
     restart: unless-stopped
     healthcheck:
-      test:
-        ["CMD", "python", "-c", "from urllib.request import urlopen; urlopen('http://127.0.0.1:8000/ready')"]
+      test: ["CMD", "python", "-c", "from urllib.request import urlopen; import sys; r=urlopen('http://127.0.0.1:8000/ready', timeout=5); print(r.read().decode()); sys.exit(0 if r.status==200 else 1)"]
       interval: 30s
-      timeout: 5s
-      retries: 3
-      start_period: 20s
+      timeout: 10s
+      retries: 5
+      start_period: 25s
 
 volumes:
   viralai-data:

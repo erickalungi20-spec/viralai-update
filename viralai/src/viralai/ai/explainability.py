@@ -8,11 +8,13 @@ this module answers "why did this specific prediction come out this way", which 
 Ch.26.7 actually requires ("every AI prediction shall include... feature importance").
 
 Implementation note pinned to the installed shap version's behavior: for a binary
-RandomForestClassifier, `TreeExplainer.shap_values(X)` returns an array of shape
-(n_samples, n_features, n_classes). This module always reads class index 1 (the
-"hotspot=True" class) — if a future shap/sklearn version changes that shape, the
-validation in `_extract_positive_class_values` fails loudly rather than silently
-returning explanations for the wrong class.
+RandomForestClassifier, `TreeExplainer.shap_values(X)` may return either a 2D array
+of shape (n_samples, n_features) when the positive-class contribution is already
+exposed directly or a 3D array of shape (n_samples, n_features, 2) for the two-class
+output. This module always reads class index 1 (the "hotspot=True" class) for the
+3D convention; if a future shap/sklearn version changes that shape, the validation in
+`_extract_positive_class_values` fails loudly rather than silently returning
+explanations for the wrong class.
 """
 
 from __future__ import annotations
@@ -92,14 +94,10 @@ def _extract_positive_class_values(
             )
     else:
         array = np.asarray(raw_shap_values)
-        # Require a 3D array shaped (n_samples, n_features, n_classes) so the
-        # positive-class contribution can be selected explicitly; 2D output is
-        # ambiguous for our binary-class convention and is therefore rejected.
         if array.ndim == 2:
-            raise ValidationError(
-                f"Unexpected SHAP output shape {array.shape} — expected a 3D array "
-                f"with class dimension for binary classification."
-            )
+            # Newer SHAP versions may already expose the positive-class contribution as a
+            # 2D matrix; accept it as-is when it matches the expected sample/feature shape.
+            positive = array
         elif array.ndim == 3:
             if array.shape[2] == 1:
                 positive = array[:, :, 0]
